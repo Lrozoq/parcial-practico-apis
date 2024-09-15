@@ -57,16 +57,16 @@ describe('ProductosService', () => {
     const storedProducto: ProductoEntity = productosList[0];
     const producto: ProductoEntity = await service.findOne(storedProducto.id);
     expect(producto).not.toBeNull();
-    expect(producto.nombre).toEqual(producto.nombre)
-    expect(producto.precio).toEqual(producto.precio)
+    expect(producto.nombre).toEqual(storedProducto.nombre)
+    expect(producto.precio).toEqual(storedProducto.precio)
   });
 
-  it('findOne should throw an exception for an invalid producto', async () => {
+  it('findOne should throw an exception for an invalid product', async () => {
     await expect(() => service.findOne("0")).rejects.toHaveProperty("message", "No se encontró el producto con la identificación proporcionada.")
   });
 
 
-  it('create should return a new producto', async () => {
+  it('create should return a new product', async () => {
     const producto: ProductoEntity = {
       id: "",
       nombre: faker.company.name(),
@@ -84,7 +84,7 @@ describe('ProductosService', () => {
     expect(storedProduct.precio).toEqual(newProduct.precio)
   });
 
-  it('create should throw an exception for an invalid tipo de producto', async () => {
+  it('create should throw an exception for an invalid product type', async () => {
     const producto: ProductoEntity = {
       id: "",
       nombre: faker.company.name(),
@@ -96,7 +96,7 @@ describe('ProductosService', () => {
     await expect(() => service.create(producto)).rejects.toHaveProperty("message", "El tipo de producto no es valido")
   });
 
-  it('update should modify a producto', async () => {
+  it('update should modify a product', async () => {
     const producto: ProductoEntity = productosList[0];
     producto.nombre = "New name";
     producto.precio = Number.parseInt(faker.commerce.price());
@@ -113,7 +113,7 @@ describe('ProductosService', () => {
     expect(storedProducto.tipo).toEqual(producto.tipo)
   });
 
-  it('update should throw an exception for an invalid producto', async () => {
+  it('update should throw an exception for an invalid product', async () => {
     let producto: ProductoEntity = productosList[0];
     producto = {
       ...producto, nombre: "New name", precio: 10000, tipo: obtenerTipoProducto()
@@ -121,7 +121,7 @@ describe('ProductosService', () => {
     await expect(() => service.update("0", producto)).rejects.toHaveProperty("message", "No se encontró el producto con la identificación proporcionada.")
   });
 
-  it('update should throw an exception for an invalid producto', async () => {
+  it('update should throw an exception for an invalid product type', async () => {
     let producto: ProductoEntity = productosList[0];
     producto = {
       ...producto, nombre: "New name", precio: 10000, tipo: "tipo actualizado"
@@ -129,7 +129,7 @@ describe('ProductosService', () => {
     await expect(() => service.update("0", producto)).rejects.toHaveProperty("message", "El tipo de producto no es valido")
   });
 
-  it('delete should remove a producto', async () => {
+  it('delete should remove a product', async () => {
     const producto: ProductoEntity = productosList[0];
     await service.delete(producto.id);
   
@@ -137,7 +137,7 @@ describe('ProductosService', () => {
     expect(deletedProducto).toBeNull();
   });
 
-  it('delete should throw an exception for an invalid producto', async () => {
+  it('delete should throw an exception for an invalid product', async () => {
     const producto: ProductoEntity = productosList[0];
     await service.delete(producto.id);
     await expect(() => service.delete("0")).rejects.toHaveProperty("message", "No se encontró el producto con la identificación proporcionada.")
