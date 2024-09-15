@@ -4,14 +4,14 @@ import { AppService } from './app.service';
 import { ProductosModule } from './productos/productos.module';
 import { TiendasModule } from './tiendas/tiendas.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Producto } from './productos/entities/producto';
-import { Tienda } from './tiendas/entities/tienda';
-import { ProductoTienda } from './productos-tiendas/entities/producto-tienda';
+import { ProductoEntity } from './productos/entities/producto-entity';
+import { TiendaEntity } from './tiendas/entities/tienda-entity';
+import { ProductoTiendaEntity } from './productos-tiendas/entities/producto-tienda-entity';
 
 @Module({
   imports: [
-    ProductosModule, 
-    TiendasModule, 
+    ProductosModule,
+    TiendasModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -19,14 +19,10 @@ import { ProductoTienda } from './productos-tiendas/entities/producto-tienda';
       username: 'postgres',
       password: 'postgres',
       database: 'parcial-practico',
-      entities: [
-        Producto,
-        Tienda,
-        ProductoTienda
-      ],
+      entities: [ProductoEntity, TiendaEntity, ProductoTiendaEntity],
       dropSchema: true,
       synchronize: true,
-    })
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
