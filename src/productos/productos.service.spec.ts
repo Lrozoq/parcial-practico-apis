@@ -6,7 +6,6 @@ import { TypeOrmTestingConfig } from '../shared/testing-utils/typeorm-testing-co
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { faker } from '@faker-js/faker';
 
-
 describe('ProductosService', () => {
   let service: ProductosService;
   let repository: Repository<ProductoEntity>;
@@ -19,23 +18,25 @@ describe('ProductosService', () => {
     }).compile();
 
     service = module.get<ProductosService>(ProductosService);
-    repository = module.get<Repository<ProductoEntity>>(getRepositoryToken(ProductoEntity));
+    repository = module.get<Repository<ProductoEntity>>(
+      getRepositoryToken(ProductoEntity),
+    );
     await seedDatabase();
   });
 
   const seedDatabase = async () => {
     repository.clear();
     productosList = [];
-    for(let i = 0; i < 5; i++){
-        const producto: ProductoEntity = await repository.save({
+    for (let i = 0; i < 5; i++) {
+      const producto: ProductoEntity = await repository.save({
         nombre: faker.company.name(),
         precio: Number.parseInt(faker.commerce.price()),
         tipo: obtenerTipoProducto(),
-        productoTiendas: null
-      })
+        productoTiendas: null,
+      });
       productosList.push(producto);
     }
-  }
+  };
 
   function obtenerTipoProducto(): string {
     const tiposProductos = ['Perecedoro', 'No perecedero'];
@@ -57,89 +58,117 @@ describe('ProductosService', () => {
     const storedProducto: ProductoEntity = productosList[0];
     const producto: ProductoEntity = await service.findOne(storedProducto.id);
     expect(producto).not.toBeNull();
-    expect(producto.nombre).toEqual(storedProducto.nombre)
-    expect(producto.precio).toEqual(storedProducto.precio)
+    expect(producto.nombre).toEqual(storedProducto.nombre);
+    expect(producto.precio).toEqual(storedProducto.precio);
   });
 
   it('findOne should throw an exception for an invalid product', async () => {
-    await expect(() => service.findOne("0")).rejects.toHaveProperty("message", "No se encontró el producto con la identificación proporcionada.")
+    await expect(() => service.findOne('0')).rejects.toHaveProperty(
+      'message',
+      'No se encontró el producto con la identificación proporcionada.',
+    );
   });
-
 
   it('create should return a new product', async () => {
     const producto: ProductoEntity = {
-      id: "",
+      id: '',
       nombre: faker.company.name(),
       precio: Number.parseInt(faker.commerce.price()),
       tipo: obtenerTipoProducto(),
-      productoTiendas: []
-    }
+      productoTiendas: [],
+    };
 
     const newProduct: ProductoEntity = await service.create(producto);
     expect(newProduct).not.toBeNull();
 
-    const storedProduct: ProductoEntity = await repository.findOne({where: {id: newProduct.id}})
+    const storedProduct: ProductoEntity = await repository.findOne({
+      where: { id: newProduct.id },
+    });
     expect(storedProduct).not.toBeNull();
-    expect(storedProduct.nombre).toEqual(newProduct.nombre)
-    expect(storedProduct.precio).toEqual(newProduct.precio)
+    expect(storedProduct.nombre).toEqual(newProduct.nombre);
+    expect(storedProduct.precio).toEqual(newProduct.precio);
   });
 
   it('create should throw an exception for an invalid product type', async () => {
     const producto: ProductoEntity = {
-      id: "",
+      id: '',
       nombre: faker.company.name(),
       precio: Number.parseInt(faker.commerce.price()),
-      tipo: "otro tipo de producto",
-      productoTiendas: []
-    }
+      tipo: 'otro tipo de producto',
+      productoTiendas: [],
+    };
 
-    await expect(() => service.create(producto)).rejects.toHaveProperty("message", "El tipo de producto no es valido")
+    await expect(() => service.create(producto)).rejects.toHaveProperty(
+      'message',
+      'El tipo de producto no es valido',
+    );
   });
 
   it('update should modify a product', async () => {
     const producto: ProductoEntity = productosList[0];
-    producto.nombre = "New name";
+    producto.nombre = 'New name';
     producto.precio = Number.parseInt(faker.commerce.price());
-    producto.tipo =  obtenerTipoProducto();
+    producto.tipo = obtenerTipoProducto();
 
-  
-    const updatedProducto: ProductoEntity = await service.update(producto.id, producto);
+    const updatedProducto: ProductoEntity = await service.update(
+      producto.id,
+      producto,
+    );
     expect(updatedProducto).not.toBeNull();
-  
-    const storedProducto: ProductoEntity = await repository.findOne({ where: { id: producto.id } })
+
+    const storedProducto: ProductoEntity = await repository.findOne({
+      where: { id: producto.id },
+    });
     expect(storedProducto).not.toBeNull();
-    expect(storedProducto.nombre).toEqual(producto.nombre)
-    expect(storedProducto.precio).toEqual(producto.precio)
-    expect(storedProducto.tipo).toEqual(producto.tipo)
+    expect(storedProducto.nombre).toEqual(producto.nombre);
+    expect(storedProducto.precio).toEqual(producto.precio);
+    expect(storedProducto.tipo).toEqual(producto.tipo);
   });
 
   it('update should throw an exception for an invalid product', async () => {
     let producto: ProductoEntity = productosList[0];
     producto = {
-      ...producto, nombre: "New name", precio: 10000, tipo: obtenerTipoProducto()
-    }
-    await expect(() => service.update("0", producto)).rejects.toHaveProperty("message", "No se encontró el producto con la identificación proporcionada.")
+      ...producto,
+      nombre: 'New name',
+      precio: 10000,
+      tipo: obtenerTipoProducto(),
+    };
+    await expect(() => service.update('0', producto)).rejects.toHaveProperty(
+      'message',
+      'No se encontró el producto con la identificación proporcionada.',
+    );
   });
 
   it('update should throw an exception for an invalid product type', async () => {
     let producto: ProductoEntity = productosList[0];
     producto = {
-      ...producto, nombre: "New name", precio: 10000, tipo: "tipo actualizado"
-    }
-    await expect(() => service.update("0", producto)).rejects.toHaveProperty("message", "El tipo de producto no es valido")
+      ...producto,
+      nombre: 'New name',
+      precio: 10000,
+      tipo: 'tipo actualizado',
+    };
+    await expect(() => service.update('0', producto)).rejects.toHaveProperty(
+      'message',
+      'El tipo de producto no es valido',
+    );
   });
 
   it('delete should remove a product', async () => {
     const producto: ProductoEntity = productosList[0];
     await service.delete(producto.id);
-  
-    const deletedProducto: ProductoEntity = await repository.findOne({ where: { id: producto.id } })
+
+    const deletedProducto: ProductoEntity = await repository.findOne({
+      where: { id: producto.id },
+    });
     expect(deletedProducto).toBeNull();
   });
 
   it('delete should throw an exception for an invalid product', async () => {
     const producto: ProductoEntity = productosList[0];
     await service.delete(producto.id);
-    await expect(() => service.delete("0")).rejects.toHaveProperty("message", "No se encontró el producto con la identificación proporcionada.")
+    await expect(() => service.delete('0')).rejects.toHaveProperty(
+      'message',
+      'No se encontró el producto con la identificación proporcionada.',
+    );
   });
 });

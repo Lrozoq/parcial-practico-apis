@@ -1,7 +1,7 @@
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { ProductoTiendaEntity } from "../../productos-tiendas/entities/producto-tienda-entity";
-import { ProductoEntity } from "../../productos/entities/producto-entity";
-import { TiendaEntity } from "../../tiendas/entities/tienda-entity";
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ProductoTiendaEntity } from '../../productos-tiendas/entities/producto-tienda-entity';
+import { ProductoEntity } from '../../productos/entities/producto-entity';
+import { TiendaEntity } from '../../tiendas/entities/tienda-entity';
 
 export const TypeOrmTestingConfig = () => [
   TypeOrmModule.forRoot({
@@ -14,6 +14,6 @@ export const TypeOrmTestingConfig = () => [
   TypeOrmModule.forFeature([
     ProductoEntity,
     TiendaEntity,
-    ProductoTiendaEntity
-  ])
-]
+    ProductoTiendaEntity,
+  ]),
+];
