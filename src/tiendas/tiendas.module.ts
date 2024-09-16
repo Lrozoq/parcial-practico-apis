@@ -7,6 +7,6 @@ import { TiendasController } from './tiendas.controller';
 @Module({
   imports: [TypeOrmModule.forFeature([TiendaEntity])],
   providers: [TiendasService],
-  controllers: [TiendasController]
+  controllers: [TiendasController],
 })
 export class TiendasModule {}

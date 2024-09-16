@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductoEntity } from 'src/productos/entities/producto-entity';
 import { TiendaEntity } from 'src/tiendas/entities/tienda-entity';
 import { ProductoTiendaEntity } from './entities/producto-tienda-entity';
+import { ProductosTiendasController } from './productos-tiendas.controller';
 
 @Module({
   imports: [
@@ -14,5 +15,6 @@ import { ProductoTiendaEntity } from './entities/producto-tienda-entity';
     ]),
   ],
   providers: [ProductosTiendasService],
+  controllers: [ProductosTiendasController],
 })
 export class ProductosTiendasModule {}
